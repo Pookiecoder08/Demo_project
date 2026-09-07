@@ -17,6 +17,7 @@ import {
   ArrowUpRight,
   Filter
 } from 'lucide-react';
+import { EnterpriseTopologyMap } from '../common/EnterpriseTopologyMap';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -240,123 +241,30 @@ export const DashboardView = () => {
         ))}
       </div>
 
-      {/* Interactive SVG Network Topology Section */}
-      <div className="p-5 bg-surface rounded-2xl border border-border shadow-sm">
-        <div className="flex items-center justify-between mb-4">
+      {/* Interactive Enterprise Network Topology Section */}
+      <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
           <div>
-            <h2 className="text-sm font-bold text-text-main flex items-center space-x-2">
-              <Network className="w-4 h-4 text-primary" />
-              <span>Interactive Perimeter & Internal Network Topology Map</span>
+            <h2 className="text-base font-bold text-slate-900 flex items-center space-x-2">
+              <Network className="w-4 h-4 text-sky-600" />
+              <span>Enterprise Network Infrastructure Topology</span>
             </h2>
-            <p className="text-[11px] text-text-muted mt-0.5">
-              Click any infrastructure node to inspect active interfaces, memory utilization, and raw traffic telemetry
+            <p className="text-xs text-slate-500 mt-0.5">
+              Real-time node telemetry • Click any element to inspect interfaces, rules, &amp; throughput
             </p>
           </div>
           <button
             onClick={() => setCurrentView('topology')}
-            className="text-xs font-semibold text-primary hover:underline flex items-center space-x-1"
+            className="text-xs font-semibold text-sky-600 hover:text-sky-700 hover:underline flex items-center space-x-1 self-start sm:self-auto"
           >
             <span>Full Canvas View</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        {/* SVG Canvas Container */}
-        <div className="w-full bg-slate-950 rounded-xl p-4 overflow-x-auto relative border border-slate-800">
-          <svg viewBox="0 0 880 380" className="w-full min-w-[760px] h-[360px] select-none">
-            <defs>
-              <linearGradient id="primaryGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#0284c7" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#4f46e5" stopOpacity="0.8" />
-              </linearGradient>
-              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="3" result="blur" />
-                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-              </filter>
-            </defs>
-
-            {/* Connecting Links with Animated Pulse Flow */}
-            {/* Internet -> Firewall */}
-            <line x1="120" y1="190" x2="230" y2="190" stroke="#0284c7" strokeWidth="2.5" className="animated-pulse-line" />
-            {/* Firewall -> Router */}
-            <line x1="290" y1="190" x2="390" y2="190" stroke="#f59e0b" strokeWidth="2.5" className="animated-pulse-line" />
-            {/* Router -> Switch */}
-            <line x1="450" y1="190" x2="550" y2="190" stroke="#10b981" strokeWidth="2.5" className="animated-pulse-line" />
-
-            {/* Switch Branches */}
-            {/* Switch -> DB Server */}
-            <line x1="610" y1="190" x2="740" y2="70" stroke="#ef4444" strokeWidth="2.5" className="animated-pulse-line" />
-            {/* Switch -> App Server */}
-            <line x1="610" y1="190" x2="740" y2="150" stroke="#10b981" strokeWidth="2" className="animated-pulse-line" />
-            {/* Switch -> IDS Sensor */}
-            <line x1="610" y1="190" x2="740" y2="230" stroke="#0284c7" strokeWidth="2" className="animated-pulse-line" />
-            {/* Switch -> Corporate Subnet */}
-            <line x1="610" y1="190" x2="740" y2="310" stroke="#f59e0b" strokeWidth="2" className="animated-pulse-line" />
-
-            {/* Topology Nodes */}
-            {nodes.map((node) => {
-              const isCrit = node.status === 'critical';
-              const isWarn = node.status === 'warning';
-              const borderColor = isCrit ? '#ef4444' : isWarn ? '#f59e0b' : '#10b981';
-
-              return (
-                <g
-                  key={node.id}
-                  transform={`translate(${node.x || 100}, ${node.y || 100})`}
-                  onClick={() => setSelectedNode(node)}
-                  className="cursor-pointer transition-transform hover:scale-105"
-                >
-                  <circle
-                    r="28"
-                    fill="#0f172a"
-                    stroke={borderColor}
-                    strokeWidth="3"
-                    filter="url(#glow)"
-                  />
-                  <circle r="22" fill="#1e293b" />
-                  
-                  {/* Node icon representation */}
-                  <text
-                    textAnchor="middle"
-                    dy="4"
-                    fill="#ffffff"
-                    fontSize="11"
-                    fontFamily="JetBrains Mono"
-                    fontWeight="bold"
-                  >
-                    {node.id === 'internet' ? 'WAN' :
-                     node.id === 'firewall' ? 'FW' :
-                     node.id === 'router' ? 'RTR' :
-                     node.id === 'switch' ? 'SW' :
-                     node.id === 'db-server' ? 'DB' :
-                     node.id === 'app-server' ? 'APP' :
-                     node.id === 'ids' ? 'IDS' : 'PC'}
-                  </text>
-
-                  {/* Label under node */}
-                  <text
-                    textAnchor="middle"
-                    y="42"
-                    fill="#f8fafc"
-                    fontSize="11"
-                    fontFamily="Inter"
-                    fontWeight="600"
-                  >
-                    {node.name.length > 18 ? node.name.slice(0, 16) + '...' : node.name}
-                  </text>
-                  <text
-                    textAnchor="middle"
-                    y="55"
-                    fill="#94a3b8"
-                    fontSize="9"
-                    fontFamily="JetBrains Mono"
-                  >
-                    {node.ip}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
+        {/* Enterprise Topology Map */}
+        <div className="w-full bg-white rounded-xl overflow-x-auto relative">
+          <EnterpriseTopologyMap />
         </div>
       </div>
 

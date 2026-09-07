@@ -13,19 +13,23 @@ export const Header = () => {
     wsConnected,
     wsStreamActive,
     setWsStreamActive,
-    logout
+    logout,
+    setCurrentView
   } = useSOC();
 
   return (
     <header className="h-16 bg-surface border-b border-border px-6 flex items-center justify-between sticky top-0 z-30 select-none shadow-sm">
       {/* Left: Brand Identity */}
-      <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white shadow-md shadow-primary/20">
-          <ShieldCheck className="w-6 h-6" />
-        </div>
+      <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setCurrentView && setCurrentView('dashboard')}>
+        <img
+          src="/logo-full.png"
+          alt="SecureNet AI Logo"
+          className="h-10 w-auto object-contain drop-shadow-sm transition-transform hover:scale-105"
+        />
         <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold tracking-tight text-text-main">
-            SecureNet<span className="text-primary font-extrabold">AI</span>
+          <span className="text-xl font-bold tracking-tight text-text-main flex items-center">
+            <span>SecureNet</span>
+            <span className="text-sky-500 font-extrabold ml-0.5">AI</span>
           </span>
           <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary-light text-primary border border-primary/20">
             SOC Enterprise v4.2

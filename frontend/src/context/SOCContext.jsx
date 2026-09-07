@@ -17,10 +17,10 @@ export const SOCProvider = ({ children }) => {
   // Auth & RBAC State
   const [user, setUser] = useState(SEED_USERS[0]); // Default: Alex Vance (Administrator)
   const [role, setRole] = useState("Administrator");
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Navigation State
-  const [currentView, setCurrentView] = useState("dashboard");
+  const [currentView, setCurrentView] = useState("login");
 
   // Slide-over & Modals
   const [selectedNode, setSelectedNode] = useState(null);
@@ -48,6 +48,7 @@ export const SOCProvider = ({ children }) => {
   // WebSocket State
   const [wsConnected, setWsConnected] = useState(false);
   const [wsStreamActive, setWsStreamActive] = useState(true);
+  const [isSiteLoading, setIsSiteLoading] = useState(true);
 
   // Toast Queue State (Max 2 visible, rest queued)
   const [toastQueue, setToastQueue] = useState([]);
@@ -183,7 +184,13 @@ export const SOCProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    refreshTelemetry();
+    const initApp = async () => {
+      await refreshTelemetry();
+      setTimeout(() => {
+        setIsSiteLoading(false);
+      }, 1500);
+    };
+    initApp();
   }, [refreshTelemetry]);
 
   // WebSocket Live Stream Connection
@@ -383,7 +390,10 @@ export const SOCProvider = ({ children }) => {
         // WebSocket
         wsConnected,
         wsStreamActive,
-        setWsStreamActive
+        setWsStreamActive,
+        // Site Loading State
+        isSiteLoading,
+        setIsSiteLoading
       }}
     >
       {children}

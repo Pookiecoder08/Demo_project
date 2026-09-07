@@ -1,167 +1,177 @@
 import React, { useState } from 'react';
 import { useSOC } from '../../context/SOCContext';
-import { Network, Server, ShieldCheck, Activity, Eye, HardDrive, Info } from 'lucide-react';
+import { EnterpriseTopologyMap } from '../common/EnterpriseTopologyMap';
+import {
+  Network,
+  Activity,
+  ShieldCheck,
+  ShieldAlert,
+  AlertTriangle,
+  RotateCcw,
+  Zap,
+  Radio,
+  Server
+} from 'lucide-react';
 
 export const NetworkTopologyView = () => {
   const { nodes, setSelectedNode } = useSOC();
-  const [filterType, setFilterType] = useState('ALL');
+  const [activeFilter, setActiveFilter] = useState('ALL');
 
-  const filteredNodes = nodes.filter((n) => {
-    if (filterType === 'ALL') return true;
-    if (filterType === 'CRITICAL') return n.status === 'critical';
-    if (filterType === 'WARNING') return n.status === 'warning';
-    if (filterType === 'HEALTHY') return n.status === 'healthy';
-    return true;
-  });
+  const healthyCount = nodes.filter((n) => n.status === 'healthy').length || 5;
+  const warningCount = nodes.filter((n) => n.status === 'warning').length || 2;
+  const criticalCount = nodes.filter((n) => n.status === 'critical').length || 1;
+
+  const handleFilterClick = (filter) => {
+    if (activeFilter === filter) {
+      setActiveFilter('ALL');
+    } else {
+      setActiveFilter(filter);
+    }
+  };
 
   return (
     <div className="space-y-6 pb-12 select-none">
-      {/* View Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-text-main flex items-center space-x-2">
-            <Network className="w-5 h-5 text-primary" />
-            <span>Infrastructure Network Topology Fabric</span>
-          </h1>
-          <p className="text-xs text-text-muted mt-0.5">
-            Full-mesh logical and physical link mapping with real-time latency, throughput, and packet loss telemetry
-          </p>
-        </div>
+      {/* Main Enterprise Network Infrastructure Topology Card */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 md:p-8">
+        {/* Header matching user design */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-slate-900">
+              Enterprise Network Infrastructure Topology
+            </h1>
+            <p className="text-xs md:text-sm text-slate-500 mt-1 flex items-center space-x-1.5">
+              <span>Real-time node telemetry • Click any element to inspect interfaces, rules, &amp; throughput</span>
+            </p>
+          </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center space-x-2">
-          {['ALL', 'CRITICAL', 'WARNING', 'HEALTHY'].map((f) => (
+          {/* Top-right Status Filter Pills */}
+          <div className="flex items-center space-x-2.5 flex-wrap gap-y-2">
+            {/* Healthy Pill */}
             <button
-              key={f}
-              onClick={() => setFilterType(f)}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold border transition-all ${
-                filterType === f
-                  ? 'bg-primary text-white border-primary shadow-sm'
-                  : 'bg-surface text-text-muted border-border hover:bg-surface-hover'
+              onClick={() => handleFilterClick('HEALTHY')}
+              className={`px-3.5 py-1 rounded-full text-xs font-semibold border transition-all flex items-center space-x-1.5 cursor-pointer shadow-sm ${
+                activeFilter === 'HEALTHY'
+                  ? 'bg-emerald-100 border-emerald-500 text-emerald-800 ring-2 ring-emerald-400/30'
+                  : 'bg-emerald-50/90 border-emerald-300 text-emerald-600 hover:bg-emerald-100/80 hover:border-emerald-400'
               }`}
             >
-              {f}
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+              <span>Healthy ({healthyCount})</span>
             </button>
-          ))}
+
+            {/* Warning Pill */}
+            <button
+              onClick={() => handleFilterClick('WARNING')}
+              className={`px-3.5 py-1 rounded-full text-xs font-semibold border transition-all flex items-center space-x-1.5 cursor-pointer shadow-sm ${
+                activeFilter === 'WARNING'
+                  ? 'bg-amber-100 border-amber-500 text-amber-900 ring-2 ring-amber-400/30'
+                  : 'bg-amber-50/90 border-amber-300 text-amber-700 hover:bg-amber-100/80 hover:border-amber-400'
+              }`}
+            >
+              <span className="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
+              <span>Warning ({warningCount})</span>
+            </button>
+
+            {/* Critical Pill */}
+            <button
+              onClick={() => handleFilterClick('CRITICAL')}
+              className={`px-3.5 py-1 rounded-full text-xs font-semibold border transition-all flex items-center space-x-1.5 cursor-pointer shadow-sm ${
+                activeFilter === 'CRITICAL'
+                  ? 'bg-rose-100 border-rose-500 text-rose-900 ring-2 ring-rose-400/30'
+                  : 'bg-rose-50/90 border-rose-300 text-rose-600 hover:bg-rose-100/80 hover:border-rose-400'
+              }`}
+            >
+              <span className="w-2 h-2 rounded-full bg-rose-500 inline-block"></span>
+              <span>Critical ({criticalCount})</span>
+            </button>
+
+            {/* Reset Filter Button if active */}
+            {activeFilter !== 'ALL' && (
+              <button
+                onClick={() => setActiveFilter('ALL')}
+                className="px-2.5 py-1 rounded-full text-xs font-medium text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center space-x-1"
+                title="Reset filter to view all nodes"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>Show All</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* The Interactive SVG Canvas */}
+        <div className="w-full bg-white rounded-xl pt-2 pb-6 px-2 overflow-x-auto relative">
+          <EnterpriseTopologyMap activeFilter={activeFilter} />
+        </div>
+
+        {/* Bottom Legend & Fabric Telemetry Summary */}
+        <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-3">
+          <div className="flex items-center space-x-5">
+            <span className="flex items-center space-x-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+              <span className="text-slate-700 font-medium">Optimal Uplink (10GbE / HA)</span>
+            </span>
+            <span className="flex items-center space-x-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+              <span className="text-slate-700 font-medium">Elevated Traffic / Policy Warning</span>
+            </span>
+            <span className="flex items-center space-x-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
+              <span className="text-slate-700 font-medium">Host Compromised / SQL Injection Attack</span>
+            </span>
+          </div>
+
+          <div className="flex items-center space-x-2 text-[11px] text-slate-400">
+            <Radio className="w-3 h-3 text-emerald-500 animate-pulse" />
+            <span>Interactive Fabric Active • Click any node to inspect interfaces, rules, &amp; throughput</span>
+          </div>
         </div>
       </div>
 
-      {/* Main Canvas Card */}
-      <div className="bg-surface rounded-2xl border border-border p-6 shadow-sm">
-        <div className="w-full bg-slate-950 rounded-xl p-4 overflow-x-auto relative border border-slate-800">
-          <svg viewBox="0 0 900 420" className="w-full min-w-[800px] h-[400px]">
-            <defs>
-              <filter id="glow-full" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="3.5" result="blur" />
-                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-              </filter>
-            </defs>
-
-            {/* Connecting Links with animated dash stroke */}
-            <line x1="120" y1="210" x2="240" y2="210" stroke="#0284c7" strokeWidth="3" className="animated-pulse-line" />
-            <line x1="300" y1="210" x2="420" y2="210" stroke="#f59e0b" strokeWidth="3" className="animated-pulse-line" />
-            <line x1="480" y1="210" x2="600" y2="210" stroke="#10b981" strokeWidth="3" className="animated-pulse-line" />
-
-            <line x1="660" y1="210" x2="780" y2="70" stroke="#ef4444" strokeWidth="2.5" className="animated-pulse-line" />
-            <line x1="660" y1="210" x2="780" y2="160" stroke="#10b981" strokeWidth="2.5" className="animated-pulse-line" />
-            <line x1="660" y1="210" x2="780" y2="250" stroke="#0284c7" strokeWidth="2.5" className="animated-pulse-line" />
-            <line x1="660" y1="210" x2="780" y2="340" stroke="#f59e0b" strokeWidth="2.5" className="animated-pulse-line" />
-
-            {/* Link Telemetry Annotations */}
-            <text x="180" y="200" fill="#38bdf8" fontSize="9" fontFamily="JetBrains Mono" textAnchor="middle">
-              10.2 Gbps
-            </text>
-            <text x="360" y="200" fill="#fde047" fontSize="9" fontFamily="JetBrains Mono" textAnchor="middle">
-              4.8 Gbps (HA)
-            </text>
-            <text x="540" y="200" fill="#4ade80" fontSize="9" fontFamily="JetBrains Mono" textAnchor="middle">
-              0.4ms • 18 Gbps
-            </text>
-            <text x="735" y="125" fill="#f87171" fontSize="9" fontFamily="JetBrains Mono" textAnchor="middle">
-              SQLi Spike
-            </text>
-
-            {/* Render Nodes */}
-            {filteredNodes.map((node) => {
-              const isCrit = node.status === 'critical';
-              const isWarn = node.status === 'warning';
-              const strokeColor = isCrit ? '#ef4444' : isWarn ? '#f59e0b' : '#10b981';
-
-              return (
-                <g
-                  key={node.id}
-                  transform={`translate(${node.x || 100}, ${(node.y || 100) + 20})`}
-                  onClick={() => setSelectedNode(node)}
-                  className="cursor-pointer transition-transform hover:scale-110"
-                >
-                  <circle
-                    r="32"
-                    fill="#0f172a"
-                    stroke={strokeColor}
-                    strokeWidth="3.5"
-                    filter="url(#glow-full)"
-                  />
-                  <circle r="25" fill="#1e293b" />
-                  <text
-                    textAnchor="middle"
-                    dy="4"
-                    fill="#ffffff"
-                    fontSize="11"
-                    fontFamily="JetBrains Mono"
-                    fontWeight="bold"
-                  >
-                    {node.id === 'internet' ? 'WAN' :
-                     node.id === 'firewall' ? 'FW' :
-                     node.id === 'router' ? 'RTR' :
-                     node.id === 'switch' ? 'SW' :
-                     node.id === 'db-server' ? 'DB' :
-                     node.id === 'app-server' ? 'APP' :
-                     node.id === 'ids' ? 'IDS' : 'PC'}
-                  </text>
-                  <text
-                    textAnchor="middle"
-                    y="46"
-                    fill="#f8fafc"
-                    fontSize="11"
-                    fontFamily="Inter"
-                    fontWeight="600"
-                  >
-                    {node.name.length > 20 ? node.name.slice(0, 18) + '...' : node.name}
-                  </text>
-                  <text
-                    textAnchor="middle"
-                    y="60"
-                    fill="#94a3b8"
-                    fontSize="9"
-                    fontFamily="JetBrains Mono"
-                  >
-                    {node.ip}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
+      {/* Network Telemetry Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex items-center space-x-3">
+          <div className="p-2.5 rounded-lg bg-sky-50 text-sky-600">
+            <Network className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-[11px] uppercase tracking-wider text-slate-400 font-mono">WAN Throughput</span>
+            <p className="text-base font-bold text-slate-900">10.2 Gbps</p>
+            <span className="text-[10px] text-emerald-600 font-medium">0% packet drop</span>
+          </div>
         </div>
 
-        {/* Legend */}
-        <div className="mt-4 pt-4 border-t border-border flex flex-wrap items-center justify-between text-xs text-text-muted gap-2">
-          <div className="flex items-center space-x-4">
-            <span className="flex items-center space-x-1.5">
-              <span className="badge-dot bg-status-healthy"></span>
-              <span>Healthy / Optimal Link</span>
-            </span>
-            <span className="flex items-center space-x-1.5">
-              <span className="badge-dot bg-status-warning"></span>
-              <span>Elevated Load / Warning</span>
-            </span>
-            <span className="flex items-center space-x-1.5">
-              <span className="badge-dot bg-status-critical"></span>
-              <span>Critical / Attack Vector Detected</span>
-            </span>
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex items-center space-x-3">
+          <div className="p-2.5 rounded-lg bg-emerald-50 text-emerald-600">
+            <Zap className="w-5 h-5" />
           </div>
-          <span className="text-[11px] text-text-subtle">
-            Click any node on the canvas to open live telemetry inspector
-          </span>
+          <div>
+            <span className="text-[11px] uppercase tracking-wider text-slate-400 font-mono">Core Fabric Latency</span>
+            <p className="text-base font-bold text-slate-900">0.42 ms</p>
+            <span className="text-[10px] text-emerald-600 font-medium">Catalyst 9500 RTR</span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex items-center space-x-3">
+          <div className="p-2.5 rounded-lg bg-purple-50 text-purple-600">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-[11px] uppercase tracking-wider text-slate-400 font-mono">Suricata Rules</span>
+            <p className="text-base font-bold text-slate-900">38,400 Active</p>
+            <span className="text-[10px] text-slate-500 font-medium">1.48M pkts analyzed</span>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex items-center space-x-3">
+          <div className="p-2.5 rounded-lg bg-rose-50 text-rose-600">
+            <ShieldAlert className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-[11px] uppercase tracking-wider text-slate-400 font-mono">Target Host Alert</span>
+            <p className="text-base font-bold text-rose-600">192.168.1.50</p>
+            <span className="text-[10px] text-rose-500 font-medium">SQL Injection Critical</span>
+          </div>
         </div>
       </div>
     </div>

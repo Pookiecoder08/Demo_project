@@ -25,6 +25,26 @@
   background-color: currentColor;
 }
 
+/* SecureNet AI Loading Animations */
+@keyframes shieldPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 16px rgba(0, 180, 255, 0.35)); }
+  50% { transform: scale(1.025); filter: drop-shadow(0 0 24px rgba(0, 210, 255, 0.55)); }
+}
+
+@keyframes progressLoop {
+  0% { width: 0%; transform: translateX(0); }
+  50% { width: 75%; }
+  100% { width: 100%; }
+}
+
+.animate-shield-pulse {
+  animation: shieldPulse 2.4s ease-in-out infinite;
+}
+
+.animate-progress-loop {
+  animation: progressLoop 2.4s ease-in-out infinite;
+}
+
 /* Custom modern scrollbars */
 ::-webkit-scrollbar {
   width: 6px;

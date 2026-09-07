@@ -7,6 +7,7 @@ import { ToastQueue } from './components/common/ToastQueue';
 import { DeviceSlideOver } from './components/common/DeviceSlideOver';
 import { ResolveThreatModal } from './components/modals/ResolveThreatModal';
 import { AddFirewallRuleModal } from './components/modals/AddFirewallRuleModal';
+import { SecureNetLoader } from './components/common/SecureNetLoader';
 
 // Views
 import { LoginView } from './components/views/LoginView';
@@ -24,7 +25,11 @@ import { LogsView } from './components/views/LogsView';
 import { SettingsView } from './components/views/SettingsView';
 
 export const App = () => {
-  const { isAuthenticated, currentView } = useSOC();
+  const { isAuthenticated, currentView, isSiteLoading } = useSOC();
+
+  if (isSiteLoading) {
+    return <SecureNetLoader />;
+  }
 
   if (!isAuthenticated || currentView === 'login') {
     return <LoginView />;

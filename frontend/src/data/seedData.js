@@ -84,7 +84,7 @@ export const SEED_METRIC_CARDS = [
 export const SEED_NODES = [
   {
     id: "internet",
-    name: "WAN / External Internet",
+    name: "Internet (WAN)",
     ip: "0.0.0.0/0",
     type: "WAN Gateway",
     status: "healthy",
@@ -98,18 +98,18 @@ export const SEED_NODES = [
     interfaces: [{ name: "wan0", ip: "198.51.100.1/24", status: "UP" }],
     ports: [{ port: 179, proto: "TCP", service: "BGP" }],
     details: { asn: 64512, peers: 4, latency: "1.2ms" },
-    x: 80,
+    x: 130,
     y: 190
   },
   {
     id: "firewall",
-    name: "Perimeter Firewall HA",
+    name: "Palo Alto FW",
     ip: "192.168.1.1",
     type: "NextGen Firewall",
     status: "warning",
     mac: "00:1B:17:00:01:01",
     vendor: "Palo Alto Networks",
-    model: "PA-5250 Enterprise",
+    model: "PA-5250 (Warning)",
     os: "PAN-OS 11.0.2-h3",
     cpu_usage: 54,
     ram_usage: 68,
@@ -125,12 +125,12 @@ export const SEED_NODES = [
       { port: 22, proto: "TCP", service: "Admin SSH" }
     ],
     details: { state: "Active/Passive HA Online", rules_sync: 128, active_sessions: 34820 },
-    x: 230,
+    x: 255,
     y: 190
   },
   {
     id: "router",
-    name: "Core Gateway Router",
+    name: "Cisco Core Router",
     ip: "192.168.1.254",
     type: "Layer 3 Router",
     status: "healthy",
@@ -147,12 +147,12 @@ export const SEED_NODES = [
     ],
     ports: [{ port: 22, proto: "TCP", service: "SSH" }],
     details: { routing_latency: "0.4ms", mtu: 1500, bgp_sync: true },
-    x: 390,
+    x: 380,
     y: 190
   },
   {
     id: "switch",
-    name: "Distribution Switch Fabric",
+    name: "Arista Core Switch",
     ip: "192.168.1.2",
     type: "Managed Switch",
     status: "healthy",
@@ -169,12 +169,12 @@ export const SEED_NODES = [
     ],
     ports: [{ port: 161, proto: "UDP", service: "SNMPv3" }],
     details: { active_ports: 20, vlans: [10, 20, 30, 99] },
-    x: 550,
+    x: 505,
     y: 190
   },
   {
     id: "db-server",
-    name: "Primary PostgreSQL Host",
+    name: "PostgreSQL DB Host",
     ip: "192.168.1.50",
     type: "Database Server",
     status: "critical",
@@ -191,12 +191,12 @@ export const SEED_NODES = [
       { port: 22, proto: "TCP", service: "SSH" }
     ],
     details: { alert: "SQL Injection & High Query Execution Spikes", max_conn: 500, current_conn: 482 },
-    x: 740,
-    y: 70
+    x: 650,
+    y: 65
   },
   {
     id: "app-server",
-    name: "Enterprise App Cluster",
+    name: "App Cluster Node",
     ip: "192.168.1.60",
     type: "Application Server",
     status: "healthy",
@@ -214,12 +214,12 @@ export const SEED_NODES = [
       { port: 8000, proto: "TCP", service: "FastAPI Core" }
     ],
     details: { uptime: "99.99%", pods: 14, cluster: "k8s-prod-cluster-01" },
-    x: 740,
-    y: 150
+    x: 650,
+    y: 145
   },
   {
     id: "ids",
-    name: "Suricata NIDS Sensor Node",
+    name: "Suricata NIDS Probe",
     ip: "192.168.1.100",
     type: "Security Sensor",
     status: "healthy",
@@ -236,13 +236,13 @@ export const SEED_NODES = [
     ],
     ports: [{ port: 9000, proto: "TCP", service: "EveBox UI" }],
     details: { active_rules: 38400, drops: 0, pkts_analyzed: 1482910 },
-    x: 740,
+    x: 650,
     y: 230
   },
   {
     id: "pcs",
-    name: "Corporate Workstation Subnet",
-    ip: "192.168.1.100 - 192.168.1.200",
+    name: "Workstations Subnet",
+    ip: "192.168.1.0/24",
     type: "Client Subnet",
     status: "warning",
     mac: "Multiple",
@@ -255,7 +255,7 @@ export const SEED_NODES = [
     interfaces: [{ name: "vlan10", subnet: "192.168.1.0/24", status: "UP" }],
     ports: [{ port: 445, proto: "TCP", service: "SMB" }, { port: 53, proto: "UDP", service: "DNS" }],
     details: { active_endpoints: 94, anomalous_outbound: true },
-    x: 740,
+    x: 650,
     y: 310
   }
 ];

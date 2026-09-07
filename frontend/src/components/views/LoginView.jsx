@@ -35,14 +35,17 @@ export const LoginView = () => {
       <div className="w-full max-w-md bg-surface rounded-2xl shadow-modal border border-border overflow-hidden">
         {/* Top Brand Banner */}
         <div className="p-8 text-center bg-gradient-to-b from-surface-secondary to-surface border-b border-border">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white mx-auto shadow-lg shadow-primary/25">
-            <ShieldCheck className="w-8 h-8" />
-          </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-text-main mt-4">
-            SecureNet<span className="text-primary font-black">AI</span>
+          <img
+            src="/logo-full.png"
+            alt="SecureNet AI"
+            className="w-20 h-20 object-contain mx-auto drop-shadow-md transition-transform hover:scale-105"
+          />
+          <h1 className="text-2xl font-extrabold tracking-tight text-text-main mt-3 flex items-center justify-center">
+            <span>SecureNet</span>
+            <span className="text-sky-500 font-black ml-0.5">AI</span>
           </h1>
           <p className="text-xs text-text-muted mt-1">
-            Enterprise Security Operations Center & NIDS Engine v4.2
+            Enterprise Security Operations Center &amp; NIDS Engine v4.2
           </p>
         </div>
 
