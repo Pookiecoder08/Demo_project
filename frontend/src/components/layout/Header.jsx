@@ -6,7 +6,6 @@ export const Header = () => {
   const {
     user,
     role,
-    switchRole,
     unreadAlertsCount,
     isNotificationDrawerOpen,
     setIsNotificationDrawerOpen,
@@ -26,18 +25,15 @@ export const Header = () => {
           alt="SecureNet AI Logo"
           className="h-10 w-auto object-contain drop-shadow-sm transition-transform hover:scale-105"
         />
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center">
           <span className="text-xl font-bold tracking-tight text-text-main flex items-center">
             <span>SecureNet</span>
             <span className="text-sky-500 font-extrabold ml-0.5">AI</span>
           </span>
-          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary-light text-primary border border-primary/20">
-            SOC Enterprise v4.2
-          </span>
         </div>
       </div>
 
-      {/* Right: Actions, Live Stream Indicator, Role Switcher, Alerts & Profile */}
+      {/* Right: Actions, Live Stream Indicator, Alerts, Profile & Sign Out */}
       <div className="flex items-center space-x-4">
         {/* Live WS Stream Indicator */}
         <button
@@ -57,20 +53,6 @@ export const Header = () => {
           </span>
           <span>{wsStreamActive ? "WS Stream: Active" : "Stream: Paused"}</span>
         </button>
-
-        {/* Role Quick-Switcher Dropdown */}
-        <div className="flex items-center space-x-1.5 bg-surface-secondary px-3 py-1 rounded-lg border border-border">
-          <span className="text-xs font-semibold text-text-subtle uppercase tracking-wider">Role:</span>
-          <select
-            value={role}
-            onChange={(e) => switchRole(e.target.value)}
-            className="bg-transparent text-xs font-semibold text-text-main focus:outline-none cursor-pointer py-1"
-          >
-            <option value="Administrator">Administrator (Full Access)</option>
-            <option value="Network Security Analyst">Security Analyst (Investigate Only)</option>
-            <option value="Employee">Employee (Read-Only Monitor)</option>
-          </select>
-        </div>
 
         {/* Alert Notification Bell */}
         <button
@@ -97,13 +79,14 @@ export const Header = () => {
           </div>
         </div>
 
-        {/* Logout Button */}
+        {/* Dedicated Sign Out Option */}
         <button
           onClick={logout}
           title="Sign out of SOC Console"
-          className="p-2 rounded-lg text-text-muted hover:text-status-critical hover:bg-status-critical-bg transition-colors"
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-status-critical text-xs font-semibold transition-all shadow-sm active:scale-95"
         >
           <LogOut className="w-4 h-4" />
+          <span>Sign Out</span>
         </button>
       </div>
     </header>

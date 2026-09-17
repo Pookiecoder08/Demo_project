@@ -132,8 +132,8 @@ export const SOCProvider = ({ children }) => {
     }
   }, [currentView, addToast]);
 
-  const login = useCallback(async (email, password, chosenRole) => {
-    const res = await apiClient.login(email, password, chosenRole);
+  const login = useCallback(async (email, password) => {
+    const res = await apiClient.login(email, password);
     if (res && res.user) {
       setUser(res.user);
       setRole(res.user.role);
@@ -142,9 +142,19 @@ export const SOCProvider = ({ children }) => {
       addToast({
         title: "Session Authenticated",
         severity: "healthy",
-        description: `Welcome back, ${res.user.name}. SOC Session Established.`,
+        description: `Welcome back, ${res.user.name}. SOC Session Established (${res.user.role}).`,
         asset: "Authentication"
       });
+      return { success: true, user: res.user };
+    } else {
+      const errorMsg = res?.error || "Authentication failed. Please check your credentials in README.md.";
+      addToast({
+        title: "Authentication Failed",
+        severity: "critical",
+        description: errorMsg,
+        asset: "Auth Gate"
+      });
+      return { success: false, error: errorMsg };
     }
   }, [addToast]);
 

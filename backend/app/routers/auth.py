@@ -9,19 +9,16 @@ router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 
 @router.post("/login", response_model=TokenResponse)
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
-    # If role is explicitly provided in the request (e.g. from demo switcher/login dropdown)
-    if payload.role:
-        user = db.query(User).filter(User.role == payload.role).first()
-        if not user:
-            user = db.query(User).filter(User.email == payload.email).first()
-    else:
-        user = db.query(User).filter(User.email == payload.email).first()
-
+    email = payload.email.strip().lower()
+    user = db.query(User).filter(User.email == email).first()
     if not user:
-        # Fallback to creating or defaulting to first admin
-        user = db.query(User).first()
-        if not user:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+        user = db.query(User).filter(User.email.ilike(email)).first()
+
+    if not user or not verify_password(payload.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password. Please verify credentials in README.md."
+        )
 
     token = create_access_token(data={"sub": user.email, "role": user.role, "name": user.name})
     return {

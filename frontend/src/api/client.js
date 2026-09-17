@@ -34,25 +34,26 @@ class APIClient {
   }
 
   // Auth
-  async login(email, password, role) {
+  async login(email, password) {
     try {
       const res = await fetch(`${BASE_URL}/api/v1/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role })
+        body: JSON.stringify({ email, password })
       });
       if (res.ok) {
         return await res.json();
       }
+      const errData = await res.json().catch(() => ({}));
+      return {
+        error: errData.detail || 'Invalid email or password. Please check README.md for credentials.'
+      };
     } catch (err) {
-      // Fallback
+      console.warn('[API] Login network failure:', err.message);
+      return {
+        error: 'Cannot connect to authentication service at ' + BASE_URL
+      };
     }
-    const matchedUser = SEED_USERS.find(u => u.role === role) || SEED_USERS[0];
-    return {
-      access_token: 'mock-jwt-token-soc-enterprise',
-      token_type: 'bearer',
-      user: matchedUser
-    };
   }
 
   // Dashboard Metrics
